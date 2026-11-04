@@ -29,3 +29,8 @@ Tests cover ledger separation, exact-cent arithmetic, cooldown boundaries, doubl
 allocation, reversals, invalid imports, deterministic replay, and storage failure
 recovery. Browser QA checks the actual wish/review/manual-record workflow and
 narrow-screen layout. No payment, bank request or remote AI call is involved.
+
+Save markers increase beyond every valid copy seen at startup, preserving the
+existing backup-wrapper format. This prevents clock rollback or a same-millisecond
+shorter replacement from reviving a stale copy after one backend fails. It does
+not merge concurrent edits from multiple tabs; use one editing tab at a time.

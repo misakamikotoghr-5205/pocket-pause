@@ -3,6 +3,7 @@ import { replay } from "./domain.js";
 const KEY = "pocket-pause:v1";
 export function createPersistence({ read, write, storage, clock = Date.now }) {
   let backend = "memory";
+  let lastSavedAt = 0;
   const valid = (value) => {
     if (!value || !Number.isSafeInteger(value.savedAt)) return false;
     try {
@@ -25,9 +26,11 @@ export function createPersistence({ read, write, storage, clock = Date.now }) {
         local = raw ? JSON.parse(raw) : null;
         if (backend === "memory" && storage) backend = "localstorage";
       } catch {}
-      const candidates = [db, local]
-        .filter(valid)
-        .sort(
+      const candidates = [db, local].filter(valid);
+      for (const candidate of candidates) {
+        lastSavedAt = Math.max(lastSavedAt, candidate.savedAt);
+      }
+      candidates.sort(
           (a, b) =>
             b.savedAt - a.savedAt ||
             b.journal.events.length - a.journal.events.length,
@@ -35,7 +38,14 @@ export function createPersistence({ read, write, storage, clock = Date.now }) {
       return { journal: candidates[0]?.journal || null, backend };
     },
     async save(journal) {
-      const wrapper = { savedAt: clock(), journal };
+      // Keep the existing wrapper format, but use savedAt as a monotonic save
+      // marker after load. Wall clocks can move backwards, and replacements
+      // can have fewer events than the backup they supersede.
+      const savedAt = Math.max(clock(), lastSavedAt + 1);
+      if (!Number.isSafeInteger(savedAt))
+        throw Error("保存标记无效，请先导出备份。");
+      lastSavedAt = savedAt;
+      const wrapper = { savedAt, journal };
       let saved = false;
       try {
         await write(wrapper);

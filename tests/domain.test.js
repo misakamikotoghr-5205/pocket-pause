@@ -211,3 +211,47 @@ test("a corrupt newer database copy cannot hide a valid local backup", async () 
   });
   assert.deepEqual((await persistence.load()).journal, valid.journal);
 });
+
+test("clock rollback cannot hide a successful fallback save behind an older database copy", async () => {
+  const old = { savedAt: t + 2, journal: make(wish, resolve) };
+  const local = storage(JSON.stringify({ savedAt: t, journal: make(wish) }));
+  const persistence = createPersistence({
+    read: async () => old,
+    write: async () => { throw Error("temporary database failure"); },
+    storage: local,
+    clock: () => t - 60000,
+  });
+  await persistence.load();
+  assert.equal(await persistence.save(emptyJournal()), "localstorage");
+  assert.ok(JSON.parse(local.getItem()).savedAt > old.savedAt);
+  const restored = createPersistence({
+    read: async () => old,
+    write: async () => {},
+    storage: local,
+  });
+  assert.deepEqual((await restored.load()).journal, emptyJournal());
+});
+
+test("a shorter import saved in the same millisecond wins over a stale longer fallback", async () => {
+  const old = { savedAt: t, journal: make(wish, resolve, paid) };
+  let database = old;
+  const local = {
+    getItem: () => JSON.stringify(old),
+    setItem: () => { throw Error("temporary local storage failure"); },
+  };
+  const persistence = createPersistence({
+    read: async () => database,
+    write: async (value) => { database = value; },
+    storage: local,
+    clock: () => t,
+  });
+  await persistence.load();
+  assert.equal(await persistence.save(emptyJournal()), "indexeddb");
+  assert.ok(database.savedAt > old.savedAt);
+  const restored = createPersistence({
+    read: async () => database,
+    write: async () => {},
+    storage: local,
+  });
+  assert.deepEqual((await restored.load()).journal, emptyJournal());
+});
