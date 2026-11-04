@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <meta
+      name="description"
+      content="让愿望隔夜再决定。冷静期愿望清单、消费复盘与分开记录的存入日记，全程本机运行。"
+    />
+    <title>慢递愿望局 · Pocket Pause</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#wishes">跳到愿望清单</a>
+    <div class="shell">
+      <header>
+        <a class="brand" href="./"
+          ><span class="brand-mark">⌁</span> 慢递愿望局
+          <small>POCKET PAUSE</small></a
+        ><span class="local-badge" id="storage-status">正在打开本机记录…</span>
+      </header>
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">给冲动一晚，也给喜欢一点时间</p>
+            <h1>先寄存愿望。<br />明天，<em>再心动。</em></h1>
+            <p class="lead">
+              不急着拥有，也不急着否定。<br />把“现在就买”寄到明天，等一封自己的回信。
+            </p>
+            <div class="hero-actions">
+              <button class="primary" id="add-open">＋ 寄出一个愿望</button
+              ><button class="text-button" id="demo-open">
+                先逛逛演示小店 ↗
+              </button>
+            </div>
+            <p class="quiet">手动日记 · 不连接支付账户 · 不执行存入或扣款</p>
+          </div>
+          <div class="post-scene" aria-hidden="true">
+            <span class="scene-orbit"></span
+            ><span class="float-label">不赶时间，慢慢喜欢</span>
+            <div class="letter letter-back"></div>
+            <div class="letter letter-front">
+              <span>TO：明天的我</span>
+              <div class="stamp">PAUSE<br /><b>24</b><small>HOURS</small></div>
+              <i></i><i></i><i></i
+              ><span class="letter-sign">愿望已收妥 ☺</span>
+            </div>
+            <span class="scene-ticket">♥ 喜欢可以被认真对待</span
+            ><span class="spark spark-one">✴</span
+            ><span class="spark spark-two">✳</span>
+          </div>
+        </section>
+        <div id="notice" role="status" aria-live="polite"></div>
+        <section class="numbers" aria-label="愿望与存入概览">
+          <article>
+            <span>正在保鲜的愿望</span><strong id="waiting-count">0</strong
+            ><small>冷静期还没结束，先好好生活。</small>
+          </article>
+          <article>
+            <span>放下的消费意向</span><strong id="avoided-total">¥0.00</strong
+            ><small>只是没有购买，不代表钱已存入。</small>
+          </article>
+          <article class="deposit-number">
+            <span>手动记下的存入</span><strong id="deposit-total">¥0.00</strong
+            ><small>由你记录，未经支付平台核验。</small>
+          </article>
+        </section>
+        <div class="workspace">
+          <section
+            id="wishes"
+            class="wish-section"
+            aria-labelledby="wishes-title"
+          >
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">YOUR WISH POSTBOX</p>
+                <h2 id="wishes-title">愿望，有自己的时区。</h2>
+              </div>
+              <span class="tiny">不催促，也不说教</span>
+            </div>
+            <div class="tabs" role="group" aria-label="筛选愿望">
+              <button data-filter="waiting" aria-pressed="true">
+                保鲜中 <span id="tab-waiting">0</span></button
+              ><button data-filter="ready" aria-pressed="false">
+                等你回信 <span id="tab-ready">0</span></button
+              ><button data-filter="archive" aria-pressed="false">
+                回信簿 <span id="tab-archive">0</span>
+              </button>
+            </div>
+            <div id="wish-list" class="wish-list"></div>
+          </section>
+          <aside class="side-column">
+            <section class="goal-card">
+              <div class="goal-top">
+                <span class="eyebrow">留给更期待的事</span
+                ><button
+                  class="icon-button"
+                  id="goal-edit"
+                  aria-label="编辑目标"
+                >
+                  ↗
+                </button>
+              </div>
+              <span class="goal-icon" aria-hidden="true">☀</span>
+              <h2 id="goal-name">周末小旅行</h2>
+              <p class="goal-description">愿望换一个方向，快乐不会变少。</p>
+              <div class="goal-amount">
+                <strong id="goal-saved">¥0.00</strong
+                ><span>/ <span id="goal-target">¥500.00</span></span>
+              </div>
+              <progress
+                id="goal-progress"
+                max="1"
+                value="0"
+                aria-label="手动记录的目标进度"
+              ></progress
+              ><button class="secondary" id="deposit-open">
+                记一笔已手动存入 ↗
+              </button>
+              <p class="goal-foot">
+                请先自行完成存入，再回来记录。此处不会转账。
+              </p>
+            </section>
+            <section class="note-card">
+              <span class="eyebrow">慢递局的一点小哲学</span>
+              <p>
+                “明天还想要，<br />它依然值得。<br />明天不想要，<br />也不算错过。”
+              </p>
+              <span class="note-sign">来自慢递店长的一封便签</span>
+            </section>
+          </aside>
+        </div>
+        <section class="journal-section" aria-labelledby="journal-title">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">SMALL STEPS, CLEAR RECORDS</p>
+              <h2 id="journal-title">每一步，都记清楚。</h2>
+            </div>
+            <span class="tiny">撤销会保留更正记录</span>
+          </div>
+          <div id="deposit-list" class="deposit-list"></div>
+        </section>
+        <section class="data-tools" aria-labelledby="data-title">
+          <div>
+            <h3 id="data-title">把记录带在自己身边。</h3>
+            <p>只在当前浏览器保存。换设备前，下载一份备份。</p>
+          </div>
+          <div class="tool-buttons">
+            <button class="secondary" id="export">导出备份 ↓</button
+            ><button class="secondary" id="import-open">导入备份 ↑</button
+            ><a
+              class="text-button"
+              href="creator-pack/xiaohobao-prompt.txt"
+              download
+              >拿走小荷包创作词 ↗</a
+            ><input
+              type="file"
+              id="import-file"
+              accept="application/json,.json"
+              hidden
+            />
+          </div>
+        </section>
+      </main>
+      <footer>
+        <span>⌁ 慢递愿望局</span>
+        <p>愿望不必立刻变成订单。</p>
+        <a href="THIRD_PARTY_NOTICES.md">开源来源与许可</a>
+      </footer>
+    </div>
+    <dialog id="wish-dialog">
+      <form id="wish-form">
+        <div class="dialog-head">
+          <span class="eyebrow">寄给明天的自己</span
+          ><button
+            type="button"
+            class="icon-button"
+            data-close
+            aria-label="关闭愿望表单"
+          >
+            ×
+          </button>
+        </div>
+        <h2>你现在，想要什么？</h2>
+        <label
+          >愿望名称<input
+            name="title"
+            maxlength="60"
+            required
+            placeholder="比如，一盏让书桌变温柔的小台灯" /></label
+        ><label
+          >预计金额（元）<input
+            name="amount"
+            inputmode="decimal"
+            required
+            placeholder="129.00" /></label
+        ><label
+          >想给自己多久？<select name="cooldown">
+            <option value="24">隔一晚 · 24 小时</option>
+            <option value="1">喝杯茶 · 1 小时</option>
+            <option value="72">慢慢想 · 72 小时</option>
+          </select></label
+        >
+        <p class="form-note">
+          时间结束后，再决定买下或放下。两种选择都被尊重。
+        </p>
+        <button class="primary" type="submit">把愿望寄出去 →</button>
+      </form>
+    </dialog>
+    <dialog id="resolve-dialog">
+      <form id="resolve-form">
+        <div class="dialog-head">
+          <span class="eyebrow">愿望来信了</span
+          ><button
+            type="button"
+            class="icon-button"
+            data-close
+            aria-label="关闭回信表单"
+          >
+            ×
+          </button>
+        </div>
+        <h2 id="resolve-title">隔了一晚，你怎么想？</h2>
+        <p id="resolve-description"></p>
+        <label
+          >留一句给未来的自己（选填）<textarea
+            name="note"
+            maxlength="280"
+            placeholder="让我期待的，其实是什么？"
+          ></textarea>
+        </label>
+        <div class="decision-buttons">
+          <button class="secondary" type="submit" value="buy" name="choice">
+            还是喜欢，决定买下</button
+          ><button class="primary" type="submit" value="release" name="choice">
+            现在放下，也很好
+          </button>
+        </div>
+        <p class="form-note">
+          这里只记录决定。买下不会下单，放下不会自动存钱。
+        </p>
+      </form>
+    </dialog>
+    <dialog id="deposit-dialog">
+      <form id="deposit-form">
+        <div class="dialog-head">
+          <span class="eyebrow">记下已经发生的一小步</span
+          ><button
+            type="button"
+            class="icon-button"
+            data-close
+            aria-label="关闭存入表单"
+          >
+            ×
+          </button>
+        </div>
+        <h2>手动存入记录</h2>
+        <p id="deposit-description">
+          请确认你已自行完成存入。这里仅记日记，不核验账户。
+        </p>
+        <label
+          >已存入金额（元）<input
+            name="amount"
+            inputmode="decimal"
+            required
+            placeholder="20.00" /></label
+        ><label
+          >备注（选填，不填账户信息）<input
+            name="note"
+            maxlength="100"
+            placeholder="给下次的小旅行加一点期待" /></label
+        ><button class="primary" type="submit">记下这一步 →</button>
+      </form>
+    </dialog>
+    <dialog id="goal-dialog">
+      <form id="goal-form">
+        <div class="dialog-head">
+          <span class="eyebrow">更期待的方向</span
+          ><button
+            type="button"
+            class="icon-button"
+            data-close
+            aria-label="关闭目标表单"
+          >
+            ×
+          </button>
+        </div>
+        <h2>想把小步，走向哪里？</h2>
+        <label>目标名称<input name="name" required maxlength="40" /></label
+        ><label
+          >目标金额（元）<input
+            name="amount"
+            inputmode="decimal"
+            required /></label
+        ><button class="primary" type="submit">保存这个期待 →</button>
+      </form>
+    </dialog>
+    <dialog id="replace-dialog">
+      <div class="dialog-head">
+        <span class="eyebrow">替换本机记录</span
+        ><button
+          type="button"
+          class="icon-button"
+          data-close
+          aria-label="取消替换"
+        >
+          ×
+        </button>
+      </div>
+      <h2>先给现在留一份备份。</h2>
+      <p>
+        本次操作会替换这个浏览器里的愿望与日记。需要保留时，请先关闭弹窗并导出备份。
+      </p>
+      <div class="decision-buttons">
+        <button class="secondary" type="button" data-close>先保留现在</button
+        ><button class="primary" id="replace-confirm" type="button">
+          确认替换记录
+        </button>
+      </div>
+    </dialog>
+    <noscript>慢递愿望局需要 JavaScript 来保存和整理你的本地日记。</noscript>
+  </body>
+</html>

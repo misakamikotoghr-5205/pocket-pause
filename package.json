@@ -1,0 +1,6 @@
+{
+  "name":"pocket-pause","version":"1.0.0","private":true,"type":"module",
+  "description":"An offline cooling-off wishlist and transparent manual savings journal.",
+  "license":"MIT","engines":{"node":">=22"},
+  "scripts":{"dev":"node scripts/serve.mjs","test":"node --test","check":"node scripts/check.mjs","build":"node scripts/build.mjs"}
+}

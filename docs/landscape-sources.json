@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-11-04",
+  "sources": [
+    {
+      "repository": "actualbudget/actual",
+      "url": "https://github.com/actualbudget/actual",
+      "branch": "master",
+      "observed_commit": "502e61ef38bb1a4301239c2af10868dad439389f",
+      "license": "MIT",
+      "reuse": "comparison only; no code or artwork copied"
+    },
+    {
+      "repository": "wishthis/wishthis",
+      "url": "https://github.com/wishthis/wishthis",
+      "branch": "develop",
+      "observed_commit": "d78c034234b071efe459ccf7e1c6dd58ded8d8d6",
+      "license": "AGPL-3.0",
+      "reuse": "comparison only; no code or artwork copied"
+    },
+    {
+      "repository": "jakearchibald/idb-keyval",
+      "url": "https://github.com/jakearchibald/idb-keyval",
+      "branch": "main",
+      "observed_commit": "17a69a1165bef486d88950cb47d3913744f038ac",
+      "license": "Apache-2.0",
+      "reuse": "vendored npm release 6.3.0, unchanged"
+    }
+  ]
+}
